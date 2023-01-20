@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <form id="form">
+      <input
+        type="text"
+        placeholder="Coloque el color"
+        name="color"
+        id="input"
+      />
+      <input type="submit" value="Enviar color" />
+    </form>
+    <ul id="ul"></ul>
+  </body>
+  <script>
+    let colores;
+    const ul = document.getElementById("ul");
+    const btn = document.getElementById("form");
+    const color = document.getElementById("input");
+
+    btn.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const data = color.value;
+
+      await fetch("http://localhost:8000/post", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          color: data,
+        }),
+      });
+
+      const res = await fetch("http://localhost:8000/colores");
+      const response = await res.json();
+
+      for (var i = 0; i < response.length; i++) {
+        const listaColores = response[i].color;
+        colores = listaColores;
+      }
+
+      ul.innerHTML += `
+      <li style="color: ${colores}"> ${colores} </li>
+      `;
+
+      btn.reset();
+    });
+  </script>
+</html>
